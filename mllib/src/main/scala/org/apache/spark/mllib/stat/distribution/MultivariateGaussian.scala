@@ -124,6 +124,10 @@ class MultivariateGaussian @Since("1.3.0") (
     // This prevents any inverted value from exceeding (eps * n * max(d))^-1
     val tol = MLUtils.EPSILON * max(d) * d.length
 
+    require(d.toArray.exists(_ < tol),
+      "Covariance matrix is not considered invertible, " +
+      "since at least one of its single values is close to zero")
+
     try {
       // log(pseudo-determinant) is sum of the logs of all non-zero singular values
       val logPseudoDetSigma = d.activeValuesIterator.filter(_ > tol).map(math.log).sum
